@@ -1,124 +1,141 @@
-# Dallas Construction – Orçamentador de Galpões  
-**Projeto Full-Stack • Backend Node.js/Express + Frontend React Native (Android & iOS)**  
-> Planejado no modelo **Triângulo de Ferro** (Escopo • Prazo • Recursos)  
-> **Prazo-alvo ﹕ 15 dias úteis** a partir do Kick-off (Dia 0)  
-> Compilação para **APK** (Android) e **IPA** (iOS) para uso interno – **sem publicação** em lojas.
+# 🏗️ Dallas Construction – Orçamentador de Galpões
 
----
+Sistema Full-Stack com aplicativo móvel (React Native) e backend (Node.js) para automação e gerenciamento completo de orçamentos de galpões metálicos.
 
-## 1 ▪ Objetivo
+## 🚀 Visão Geral
 
-1. Aplicativo móvel (RN) para **criar, visualizar e duplicar orçamentos** de galpões metálicos.  
-2. Backend **REST** (Node.js + Express + MySQL) responsável por autenticação, cálculo, persistência e geração de **PDF**.  
-3. App consome a API, mostra histórico, gera/baixa PDF e armazena sessão JWT de forma segura.  
-4. Build de **release** para Android & iOS entregue em artefatos (APK / IPA Ad-hoc ou TestFlight).
-5. Link : https://dallas-construction-or-amentador-de-galp-es-960155395693.us-west1.run.app
+O Orçamentador Dallas é uma ferramenta interna desenvolvida para otimizar e agilizar o fluxo de trabalho da equipe comercial. Ele permite:
 
----
+*   Criar, visualizar e duplicar orçamentos de forma rápida e intuitiva.
+*   Gerar PDFs profissionais automaticamente a partir dos dados inseridos.
+*   Acessar um histórico completo de orçamentos no celular (Android & iOS).
+*   Garantir a segurança com um sistema de autenticação robusto.
 
-## 2 ▪ Triângulo de Ferro
+**Link para o ambiente de demonstração:** [dallas-construction.run.app](https://dallas-construction-or-amentador-de-galp-es-960155395693.us-west1.run.app)
 
-| Dimensão | Compromisso | Observações |
-|----------|-------------|-------------|
-| **Escopo / Qualidade** | • Fluxo completo de orçamento (CRUD, cálculo, PDF).<br>• Login (JWT).<br>• Lista com filtros, duplicar, excluir.<br>• Build interno Android e iOS.<br>• UI responsiva (phones/tablets), acessibilidade básica.<br>• Cobertura de testes > 80 % nas regras de cálculo. | Alterar escopo afeta tempo ou recursos. |
-| **Prazo / Tempo** | **15 dias úteis** | Mudanças grandes de escopo prolongam prazo; mais devs podem comprimir. |
-| **Recursos / Custos** | • 1 Dev Full-Stack Sênior (100 %)<br>• 1 Dev Mobile React Native (80 %)<br>• 1 Designer UI/UX (40 %)<br>• 1 QA (25 %) | Corte de pessoal → risco de qualidade/prazo. |
+## 🛠️ Tecnologias Utilizadas
 
----
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Mobile (Frontend)** | React Native (Expo), Expo Router, TypeScript, NativeWind, React Query |
+| **Backend (API)** | Node.js, Express, TypeScript, Prisma ORM, Zod, JWT |
+| **Banco de Dados** | MySQL 8 |
+| **Geração de PDF** | Puppeteer (Renderização de HTML no servidor) |
+| **Contêineres & CI/CD** | Docker, Docker Compose, GitHub Actions, EAS Build |
 
-## 3 ▪ Arquitetura
+## 📁 Estrutura do Projeto
 
+O projeto utiliza um **monorepo** gerenciado com `pnpm` para centralizar o código do frontend e backend.
+
+```
 monorepo/
-├─ mobile/ # React Native + TypeScript + Expo Router
-│ ├─ app/ # / (Dashboard) /orcamento/[id] /novo
-│ ├─ components/ # FormSection, BudgetCard, PdfViewer...
-│ ├─ hooks/ # useAuth, useBudgets, useForm...
-│ └─ ios / android # gerados pelo Expo prebuild
-├─ api/ # Node.js 20 + Express + TypeScript
-│ ├─ src/
-│ │ ├─ controllers/
-│ │ ├─ services/ # calculos.ts, pdf.ts
-│ │ ├─ routes/
-│ │ └─ prisma/
-├─ docker-compose.yml
-└─ README.md
+├── mobile/                # React Native App (Expo)
+│   ├── app/               # Rotas (Expo Router)
+│   ├── components/
+│   ├── hooks/
+│   └── ...
+├── api/                   # Backend API em Node.js
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── services/      # Lógica de cálculo e PDF
+│   │   └── prisma/        # Schema do DB
+│   └── ...
+├── docker-compose.yml     # Orquestração dos contêineres
+└── README.md
+```
 
-yaml
-Copiar
-Editar
+## ✨ Funcionalidades
 
-### Principais Tecnologias
+#### 📝 Gestão Completa de Orçamentos
+CRUD completo (Criar, Ler, Atualizar, Deletar) para orçamentos. Inclui uma funcionalidade de "duplicar" para agilizar a criação de cotações similares.
 
-| Camada | Stack |
-|--------|-------|
-| **Mobile** | **React Native (Expo SDK ^50)**, Expo Router, React Query, TypeScript, Tailwind (NativeWind), EAS Build |
-| **PDF** | Puppeteer (HTML → PDF) |  
-| **Backend** | Node.js 20, Express, TypeScript, Prisma ORM, Zod, JWT, Multer (PDF download) |
-| **DB** | MySQL 8 (Docker) |
-| **CI/CD** | GitHub Actions → lint/test/build + EAS Build triggers |
-| **Tests** | Jest + Supertest (API) • Vitest + RTL (mobile logic) |
+#### 📄 Geração de PDF no Backend
+Um endpoint dedicado recebe o ID de um orçamento, renderiza um template HTML com os dados e o converte para um PDF otimizado, pronto para download e compartilhamento.
 
----
+#### 📱 Dashboard Móvel Intuitivo
+A tela principal do app exibe uma lista paginada de todos os orçamentos, com filtros por cliente ou status e ações rápidas (excluir, duplicar) acessíveis por gestos.
 
-## 4 ▪ Cronograma ﹙15 dias úteis﹚
+#### 🔐 Autenticação e Segurança
+Fluxo de login com JWT para proteger as rotas da API. No app mobile, o token é armazenado de forma segura usando o `SecureStore` do Expo.
 
-| Dia | Entrega Parcial | Descrição |
-|-----|-----------------|-----------|
-| **0** | Kick-off | Repo, Docker skeleton, backlog, Figma link |
-| 1-2 | Design System mobile | Paleta, componentes, wireframes RN |
-| 3-4 | Backend base | Auth, Prisma schema, CRUD clientes |
-| 5-6 | Funções de cálculo + endpoint `/orcamentos` | Testes unitários validados |
-| 7-8 | Geração de PDF no backend | Endpoint `/orcamentos/:id/pdf` |
-| 9-10 | Telas RN: Login, Dashboard, Form | Form multistep c/ validação Zod |
-| 11 | Integração RN ↔ API + resumo em tempo real | React Query cache |
-| 12 | Builds de release APK/IPA (EAS) | Docs de instalação |
-| 13 | QA, testes e2e (Detox) | Ajustes Lighthouse/PWA não se aplicam |
-| 14 | Documentação + CI | README, scripts, GH Actions, seed DB |
-| **15** | Handoff final | Tag v1.0.0, entrega APK/IPA, demo via Expo Go |
+## 🖥️ Telas do Sistema
 
-_Buffer 10 % (≈ 1,5 dia) incluído._
+1.  **Tela de Login**
+    *   Campos para email e senha.
+    *   Autenticação segura via API e armazenamento do token de sessão.
 
----
+2.  **Dashboard (Lista de Orçamentos)**
+    *   Listagem de todos os orçamentos com informações essenciais.
+    *   Filtros e busca.
+    *   Botão de acesso rápido para criar um novo orçamento.
 
-## 5 ▪ Backlog Inicial (Issues)
+3.  **Formulário de Criação/Edição**
+    *   Formulário multi-etapas para preenchimento de dados do cliente e especificações do galpão.
+    *   Validação em tempo real e máscaras de campo.
 
-1. **monorepo setup (pnpm + Turbo)**  
-2. **docker-compose (api, db, adminer)**  
-3. **Auth flow (signup/login, JWT refresh)**  
-4. **Budget calculations service & tests**  
-5. **PDF renderer & storage**  
-6. **React Native navigation & theming**  
-7. **Form screens & field masks**  
-8. **Offline caching & optimistic updates**  
-9. **Dashboard list, filters, swipe actions**  
-10. **Duplicate & delete budget endpoints+UI**  
-11. **Expo build configs android/ios**  
-12. **Detox e2e for “happy path”**  
-13. **QA/Accessibility review**  
-14. **CI pipeline build & test**  
+4.  **Visualizador de PDF**
+    *   Tela que utiliza um WebView para exibir o PDF gerado pela API.
+    *   Opções de download e compartilhamento nativo.
 
----
+## 👥 Equipe e Prazo do Projeto
 
-## 6 ▪ Critérios de Aceite
+O desenvolvimento foi planejado para **15 dias úteis**, com uma equipe enxuta e especializada.
 
-1. **Login** exige credenciais válidas; token salvo com SecureStore.  
-2. Criar orçamento → cálculo correto → PDF gerado em < 5 s.  
-3. Dashboard exibe lista paginada, permite abrir PDF in-app (WebView).  
-4. Build de release assinado (APK + IPA TestFlight/Ad-hoc).  
-5. Cobertura > 80 % nas funções críticas.  
-6. README: `pnpm i && pnpm dev` (mobile usando Expo Go) + `docker compose up`.  
+| Cargo | Alocação | Responsabilidades Principais |
+| :--- | :--- | :--- |
+| **Dev Full-Stack Sênior** | 100% | Backend (API, DB, PDF), arquitetura e DevOps. |
+| **Dev Mobile React Native**| 80% | Desenvolvimento das telas e lógica do app React Native. |
+| **Designer UI/UX** | 40% | Wireframes, protótipo navegável e design system. |
+| **QA (Quality Assurance)** | 25% | Testes funcionais, e2e e validação dos builds. |
 
----
+## 📦 Docker Compose (multi-contêiner)
 
-## 7 ▪ Riscos & Mitigações
+```yaml
+version: '3.8'
 
-| Risco | P | I | Mitigação |
-|-------|---|---|-----------|
-| Problemas de build iOS sem conta Apple | M | M | Usar EAS Simulator build + TestFlight externo; backup via Expo Dev Client |
-| Tamanho do PDF > 10 MB mobile | B | M | Otimizar imagens, compressão, stream download |
-| Conectividade instável | M | M | Cache local RN + fallback mensagem “tente novamente” |
+services:
+  api:
+    build: ./api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./api/.env
+    depends_on:
+      - db
 
----
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dallas_construction_db
+    ports:
+      - "3306:3306"
 
-## 8 ▪ Instruções Rápidas
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+```
 
+## 📊 API – Endpoints Principais
+
+| Método | Endpoint | Função |
+| :--- | :--- | :--- |
+| POST | `/auth/login` | Autentica um usuário e retorna um token JWT. |
+| GET | `/orcamentos` | Lista todos os orçamentos (com filtros e paginação). |
+| POST | `/orcamentos` | Cria um novo orçamento. |
+| PUT | `/orcamentos/:id` | Atualiza um orçamento existente. |
+| DELETE | `/orcamentos/:id` | Remove um orçamento. |
+| POST | `/orcamentos/:id/duplicar`| Cria uma cópia exata de um orçamento. |
+| GET | `/orcamentos/:id/pdf` | Gera e retorna o arquivo PDF de um orçamento. |
+
+## 📆 Cronograma de Desenvolvimento (15 Dias Úteis)
+
+| Semana | Entregas Principais |
+| :--- | :--- |
+| **1** | Kick-off, design system, arquitetura do monorepo, backend base (Auth, CRUD) e testes de cálculo. |
+| **2** | Implementação da geração de PDF, desenvolvimento das telas do app (Login, Dashboard, Formulário) e integração com a API. |
+| **3** | Geração dos builds (APK/IPA), testes e2e, rodada final de QA, documentação e handoff do projeto. |
